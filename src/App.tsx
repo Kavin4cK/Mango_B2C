@@ -326,12 +326,18 @@ export default function App() {
                 <h3 className="font-bold text-xl mb-2">Ready for Harvest</h3>
                 <p className="text-sm opacity-90 leading-normal mb-6">Our Badami trees are heavy with fruit. Shipping starts this Monday.</p>
                 <div className="group relative w-full h-80 rounded-3xl overflow-hidden shadow-artistic mt-8 mb-4 border-2 border-white">
-                  <img 
-                    src="https://photos.fife.usercontent.google.com/pw/AP1GczPlk9naRvz3mnt_LihyATt_GJa5b7bvu9Fc7QF6JpA0k8WC1xNh2A6Y=w1213-h913-s-no-gm?authuser=0" 
-                    alt="Lush Mango Orchard in Ramanagara"
-                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
-                    referrerPolicy="no-referrer"
-                  />
+                  <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory h-full">
+                    <img src="/images/img1.jpeg" alt="Mango Orchard 1" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/images/img2.jpeg" alt="Mango Orchard 2" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/images/img3.jpeg" alt="Mango Orchard 3" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/images/img4.jpeg" alt="Mango Orchard 4" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                  </div>
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                    <div class="w-2 h-2 bg-white/50 rounded-full"></div>
+                    <div class="w-2 h-2 bg-white/50 rounded-full"></div>
+                    <div class="w-2 h-2 bg-white/50 rounded-full"></div>
+                  </div>
                   <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-white">
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">Our Orchard</p>
                     <p className="text-sm font-medium italic">Ramanagara, Summer 2026</p>
@@ -348,10 +354,9 @@ export default function App() {
               <div className="flex-1 artistic-card border-mango p-8 flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src="https://photos.fife.usercontent.google.com/pw/AP1GczMi40VgDIg0mNJeDdPyktKMP_J3YZHdx_xTosDbI2Ui_qObBoE-qB_G=w1213-h913-s-no-gm?authuser=0" 
+                    src="/images/img6.jpeg" 
                     alt="Sindura Mangoes" 
                     className="w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/80 to-transparent"></div>
                 </div>
@@ -369,10 +374,9 @@ export default function App() {
               <div className="flex-1 artistic-card border-leaf p-8 flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src="https://photos.fife.usercontent.google.com/pw/AP1GczP34jpiTmKcQMUER8QyDgGcb_vq-9Y1lhmhBizYww_VslToTLmD_slY=w1216-h913-s-no-gm?authuser=0" 
+                    src="/images/img5.jpeg" 
                     alt="Badami Mangoes" 
                     className="w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/80 to-transparent"></div>
                 </div>
@@ -451,10 +455,9 @@ export default function App() {
               >
                 <div className="relative h-80 overflow-hidden bg-cream">
                   <img 
-                    src={`https://picsum.photos/seed/${mango.id}/800/600`} 
+                    src={mango.id === 'sindura' ? "/images/img6.jpeg" : "/images/img5.jpeg"}
                     alt={mango.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-4 py-2 rounded-full font-bold shadow-sm text-soil">
                     ₹{mango.price}/kg
