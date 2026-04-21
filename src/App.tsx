@@ -53,9 +53,9 @@ const FARM_DETAILS = {
   name: 'Strait of Mangoes',
   location: 'Ramanagara, Karnataka',
   upiId: 'straitmangoes@upi',
-  whatsapp: '+919999999999', // Placeholder
-  email: 'hello@straitmangoes.farm',
-  address: 'Basavanagudi Farm, Near Ramanagara Hills, Ramanagara - 562159'
+  whatsapp: '+917975245649', // Placeholder
+  email: 'straitofmangoes@gmail.com',
+  address: 'Jalamangala, Near Ramanagara Hills, Ramanagara - 562159'
 };
 
 // --- Components ---
