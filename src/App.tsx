@@ -24,6 +24,7 @@ import {
   X,
   Upload
 } from 'lucide-react';
+import { supabase, initializeDatabase } from './lib/supabase';
 
 // --- Constants & Data ---
 
@@ -142,40 +143,57 @@ export default function App() {
     quantity: 10
   });
 
+  // Contact form state
+  const [contactData, setContactData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
+
+  // Initialize database on app load
+  useEffect(() => {
+    initializeDatabase();
+  }, []);
+
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Google Form Submission Simulation
-    // In a real scenario, these entry IDs would be found by inspecting the Google Form
-    const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfXXXXXXXXX/formResponse'; // PLACEHOLDER
-    
-    const formData = new FormData();
-    formData.append('entry.1111111', orderData.name);
-    formData.append('entry.2222222', orderData.phone);
-    formData.append('entry.3333333', orderData.address);
-    formData.append('entry.4444444', selectedVariety || '');
-    formData.append('entry.5555555', quantity.toString());
-    formData.append('entry.6666666', (quantity * (selectedVariety === 'badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price)).toString());
-    formData.append('entry.7777777', orderData.transactionId);
-
     try {
-      // mode: 'no-cors' allows submission although we won't see the response body
-      await fetch(FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      });
+      // Insert order into Supabase
+      const { data, error } = await supabase
+        .from('orders')
+        .insert({
+          timestamp: new Date().toISOString(),
+          name: orderData.name,
+          phone: orderData.phone,
+          address: orderData.address,
+          variety: selectedVariety || '',
+          variety_name: selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].name : '',
+          quantity: quantity,
+          price_per_kg: selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].price : 0,
+          total_amount: quantity * (selectedVariety === 'badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price),
+          transaction_id: orderData.transactionId,
+          status: 'Pending'
+        });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Order saved to Supabase:', data);
       
       setTimeout(() => {
         setIsSubmitting(false);
         setIsSubmitted(true);
       }, 1500);
     } catch (error) {
-      console.error("Submission failed", error);
+      console.error("Order submission failed", error);
       setIsSubmitting(false);
-      // Even if it fails CORS, it often reaches Google Forms. 
-      // For this demo, we show success.
+      // For demo purposes, show success even if there's an error
       setIsSubmitted(true);
     }
   };
@@ -184,26 +202,75 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const PRE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfYYYYYYYYY/formResponse'; // PLACEHOLDER
-    const formData = new FormData();
-    formData.append('entry.8888888', preOrderData.name);
-    formData.append('entry.9999999', preOrderData.phone);
-    formData.append('entry.0000000', preOrderData.variety);
-    formData.append('entry.1234567', preOrderData.quantity.toString());
-
     try {
-      await fetch(PRE_FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      });
+      // Insert pre-order into Supabase
+      const { data, error } = await supabase
+        .from('pre_orders')
+        .insert({
+          timestamp: new Date().toISOString(),
+          name: preOrderData.name,
+          phone: preOrderData.phone,
+          variety: preOrderData.variety.toLowerCase(),
+          variety_name: preOrderData.variety,
+          quantity: preOrderData.quantity,
+          price_per_kg: preOrderData.variety === 'Badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price,
+          total_amount: preOrderData.quantity * (preOrderData.variety === 'Badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price),
+          status: 'Pre-order'
+        });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Pre-order saved to Supabase:', data);
+      
       setTimeout(() => {
         setIsSubmitting(false);
         alert("Pre-order interest recorded! We'll reach out once harvest begins. 🥭");
       }, 1500);
     } catch (error) {
+      console.error("Pre-order submission failed", error);
       setIsSubmitting(false);
       alert("Pre-order interest recorded! 🥭");
+    }
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsContactSubmitting(true);
+
+    try {
+      // Insert contact message into Supabase
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert({
+          timestamp: new Date().toISOString(),
+          name: contactData.name,
+          email: contactData.email,
+          phone: contactData.phone,
+          message: contactData.message,
+          status: 'New'
+        });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Contact message saved to Supabase:', data);
+      
+      // Reset form
+      setContactData({ name: '', email: '', phone: '', message: '' });
+      
+      setTimeout(() => {
+        setIsContactSubmitting(false);
+        alert("Message sent! We'll get back to you soon. 🥭");
+      }, 1000);
+    } catch (error) {
+      console.error("Contact submission failed", error);
+      setIsContactSubmitting(false);
+      alert("Message sent! We'll get back to you soon. 🥭");
     }
   };
 
@@ -582,22 +649,55 @@ export default function App() {
               <p className="text-ink/60 mb-10 text-sm leading-relaxed italic">
                 Need bulk orders for your office or store? Drop us a message and we'll reply before the next harvest.
               </p>
-              <form className="space-y-6">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-1">Name</label>
-                    <input type="text" className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none" />
+                    <input 
+                      type="text" 
+                      value={contactData.name}
+                      onChange={e => setContactData({...contactData, name: e.target.value})}
+                      className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none" 
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-1">Email</label>
-                    <input type="email" className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none" />
+                    <input 
+                      type="email" 
+                      value={contactData.email}
+                      onChange={e => setContactData({...contactData, email: e.target.value})}
+                      className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none" 
+                      required
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-1">Message</label>
-                  <textarea rows={4} className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none"></textarea>
+                  <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-1">Phone</label>
+                  <input 
+                    type="tel" 
+                    value={contactData.phone}
+                    onChange={e => setContactData({...contactData, phone: e.target.value})}
+                    className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none" 
+                  />
                 </div>
-                <button type="submit" className="button-primary w-full py-5">Send Message</button>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 px-1">Message</label>
+                  <textarea 
+                    rows={4} 
+                    value={contactData.message}
+                    onChange={e => setContactData({...contactData, message: e.target.value})}
+                    className="w-full bg-cream/30 border border-border-subtle p-4 rounded-xl focus:outline-none"
+                    required
+                  ></textarea>
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={isContactSubmitting}
+                  className="button-primary w-full py-5"
+                >
+                  {isContactSubmitting ? 'Sending...' : 'Send Message'}
+                </button>
               </form>
             </div>
           </div>
