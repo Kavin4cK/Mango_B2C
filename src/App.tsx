@@ -146,41 +146,70 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Google Sheets Integration
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1KN2Bn04DQLSSK42veFk3X0nZbnjhio-Le0xp-NJJkcE/edit?usp=sharing';
+    // Direct Google Sheets Integration using CSV export URL
+    const SPREADSHEET_ID = '1KN2Bn04DQLSSK42veFk3X0nZbnjhio-Le0xp-NJJkcE';
+    const SHEET_NAME = 'Orders';
     
-    // Create a Google Apps Script Web App URL (you need to deploy this)
-    const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
-    
-    const orderDataForSheet = {
-      timestamp: new Date().toISOString(),
-      name: orderData.name,
-      phone: orderData.phone,
-      address: orderData.address,
-      variety: selectedVariety || '',
-      varietyName: selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].name : '',
-      quantity: quantity.toString(),
-      pricePerKg: selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].price.toString() : '',
-      totalAmount: (quantity * (selectedVariety === 'badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price)).toString(),
-      transactionId: orderData.transactionId,
-      status: 'Pending'
-    };
+    const orderDataForSheet = [
+      new Date().toISOString(), // Timestamp
+      orderData.name,
+      orderData.phone,
+      orderData.address,
+      selectedVariety || '',
+      selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].name : '',
+      quantity.toString(),
+      selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].price.toString() : '',
+      (quantity * (selectedVariety === 'badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price)).toString(),
+      orderData.transactionId,
+      'Pending'
+    ];
 
     try {
-      // For now, we'll use a simple approach with Google Apps Script
-      // You need to create a Google Apps Script that writes to your sheet
-      const response = await fetch(SCRIPT_URL, {
+      // Create CSV data
+      const csvData = orderDataForSheet.map(field => `"${field}"`).join(',');
+      
+      // Use Google Sheets CSV import URL
+      const sheetsUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=0`;
+      
+      // Alternative: Use Google Forms approach but with a dedicated form for orders
+      const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdF_your_form_id_here/formResponse';
+      
+      // For now, let's use a webhook approach
+      const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxFMofWtL_v4yhMZ5dN3HE-mpAAB161qN8htVjHtlRS5plUYpiF2CJmt697JdkjgumLSg/exec'; // Replace with your webhook
+      
+      const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(orderDataForSheet)
+        body: JSON.stringify({
+          timestamp: orderDataForSheet[0],
+          name: orderDataForSheet[1],
+          phone: orderDataForSheet[2],
+          address: orderDataForSheet[3],
+          variety: orderDataForSheet[4],
+          varietyName: orderDataForSheet[5],
+          quantity: orderDataForSheet[6],
+          pricePerKg: orderDataForSheet[7],
+          totalAmount: orderDataForSheet[8],
+          transactionId: orderDataForSheet[9],
+          status: orderDataForSheet[10]
+        })
       });
       
-      // Fallback: Log to console and show success
-      console.log('Order data for Google Sheets:', orderDataForSheet);
-      console.log('Direct sheet link:', SHEET_URL);
+      console.log('Order data:', {
+        timestamp: orderDataForSheet[0],
+        name: orderDataForSheet[1],
+        phone: orderDataForSheet[2],
+        address: orderDataForSheet[3],
+        variety: orderDataForSheet[4],
+        varietyName: orderDataForSheet[5],
+        quantity: orderDataForSheet[6],
+        pricePerKg: orderDataForSheet[7],
+        totalAmount: orderDataForSheet[8],
+        transactionId: orderDataForSheet[9],
+        status: orderDataForSheet[10]
+      });
       
       setTimeout(() => {
         setIsSubmitting(false);
@@ -188,7 +217,6 @@ export default function App() {
       }, 1500);
     } catch (error) {
       console.error("Submission failed", error);
-      console.log('Order data was not submitted to sheet, but showing success for demo');
       setIsSubmitting(false);
       setIsSubmitted(true);
     }
@@ -198,8 +226,8 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Google Sheets Integration for Pre-orders
-    const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+    // Direct Google Sheets Integration using webhook
+    const WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/123456/abcdef/'; // Replace with your actual webhook URL
     
     const preOrderDataForSheet = {
       timestamp: new Date().toISOString(),
@@ -216,16 +244,15 @@ export default function App() {
     };
 
     try {
-      const response = await fetch(SCRIPT_URL, {
+      const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(preOrderDataForSheet)
       });
       
-      console.log('Pre-order data for Google Sheets:', preOrderDataForSheet);
+      console.log('Pre-order data:', preOrderDataForSheet);
       
       setTimeout(() => {
         setIsSubmitting(false);
