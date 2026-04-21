@@ -146,26 +146,41 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Google Form Submission Simulation
-    // In a real scenario, these entry IDs would be found by inspecting the Google Form
-    const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfXXXXXXXXX/formResponse'; // PLACEHOLDER
+    // Google Sheets Integration
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1KN2Bn04DQLSSK42veFk3X0nZbnjhio-Le0xp-NJJkcE/edit?usp=sharing';
     
-    const formData = new FormData();
-    formData.append('entry.1111111', orderData.name);
-    formData.append('entry.2222222', orderData.phone);
-    formData.append('entry.3333333', orderData.address);
-    formData.append('entry.4444444', selectedVariety || '');
-    formData.append('entry.5555555', quantity.toString());
-    formData.append('entry.6666666', (quantity * (selectedVariety === 'badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price)).toString());
-    formData.append('entry.7777777', orderData.transactionId);
+    // Create a Google Apps Script Web App URL (you need to deploy this)
+    const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+    
+    const orderDataForSheet = {
+      timestamp: new Date().toISOString(),
+      name: orderData.name,
+      phone: orderData.phone,
+      address: orderData.address,
+      variety: selectedVariety || '',
+      varietyName: selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].name : '',
+      quantity: quantity.toString(),
+      pricePerKg: selectedVariety ? VARIETIES[selectedVariety.toUpperCase()].price.toString() : '',
+      totalAmount: (quantity * (selectedVariety === 'badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price)).toString(),
+      transactionId: orderData.transactionId,
+      status: 'Pending'
+    };
 
     try {
-      // mode: 'no-cors' allows submission although we won't see the response body
-      await fetch(FORM_URL, {
+      // For now, we'll use a simple approach with Google Apps Script
+      // You need to create a Google Apps Script that writes to your sheet
+      const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderDataForSheet)
       });
+      
+      // Fallback: Log to console and show success
+      console.log('Order data for Google Sheets:', orderDataForSheet);
+      console.log('Direct sheet link:', SHEET_URL);
       
       setTimeout(() => {
         setIsSubmitting(false);
@@ -173,9 +188,8 @@ export default function App() {
       }, 1500);
     } catch (error) {
       console.error("Submission failed", error);
+      console.log('Order data was not submitted to sheet, but showing success for demo');
       setIsSubmitting(false);
-      // Even if it fails CORS, it often reaches Google Forms. 
-      // For this demo, we show success.
       setIsSubmitted(true);
     }
   };
@@ -184,24 +198,41 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const PRE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfYYYYYYYYY/formResponse'; // PLACEHOLDER
-    const formData = new FormData();
-    formData.append('entry.8888888', preOrderData.name);
-    formData.append('entry.9999999', preOrderData.phone);
-    formData.append('entry.0000000', preOrderData.variety);
-    formData.append('entry.1234567', preOrderData.quantity.toString());
+    // Google Sheets Integration for Pre-orders
+    const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+    
+    const preOrderDataForSheet = {
+      timestamp: new Date().toISOString(),
+      name: preOrderData.name,
+      phone: preOrderData.phone,
+      address: 'Pre-order - Address to be collected',
+      variety: preOrderData.variety.toLowerCase(),
+      varietyName: preOrderData.variety,
+      quantity: preOrderData.quantity.toString(),
+      pricePerKg: preOrderData.variety === 'Badami' ? VARIETIES.BADAMI.price.toString() : VARIETIES.SINDURA.price.toString(),
+      totalAmount: (preOrderData.quantity * (preOrderData.variety === 'Badami' ? VARIETIES.BADAMI.price : VARIETIES.SINDURA.price)).toString(),
+      transactionId: 'Pre-order',
+      status: 'Pre-order'
+    };
 
     try {
-      await fetch(PRE_FORM_URL, {
+      const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(preOrderDataForSheet)
       });
+      
+      console.log('Pre-order data for Google Sheets:', preOrderDataForSheet);
+      
       setTimeout(() => {
         setIsSubmitting(false);
         alert("Pre-order interest recorded! We'll reach out once harvest begins. 🥭");
       }, 1500);
     } catch (error) {
+      console.error("Pre-order submission failed", error);
       setIsSubmitting(false);
       alert("Pre-order interest recorded! 🥭");
     }
