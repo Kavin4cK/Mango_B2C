@@ -356,9 +356,9 @@ export default function App() {
                   <img 
                     src="/img6.jpeg" 
                     alt="Sindura Mangoes" 
-                    className="w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/80 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-cream/70 via-cream/35 to-transparent"></div>
                 </div>
                 <div className="z-10">
                   <span className="px-3 py-1 bg-mango/10 text-mango text-[10px] font-bold rounded-full mb-4 inline-block uppercase tracking-widest">Popular Choice</span>
@@ -376,9 +376,9 @@ export default function App() {
                   <img 
                     src="/img5.jpeg" 
                     alt="Badami Mangoes" 
-                    className="w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/80 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-cream/70 via-cream/35 to-transparent"></div>
                 </div>
                 <div className="z-10">
                   <span className="px-3 py-1 bg-leaf/10 text-leaf text-[10px] font-bold rounded-full mb-4 inline-block uppercase tracking-widest">Premium Grade</span>
