@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Playfair Display", serif;
+  --font-serif: Georgia, serif;
+  --font-sans: "Nunito", sans-serif;
+
+  --color-mango: #F5A623;
+  --color-leaf: #4CAF50;
+  --color-soil: #7B4F2E;
+  --color-cream: #FFF8E7;
+  --color-ink: #3E2723;
+  --color-border-subtle: rgba(123, 79, 46, 0.15);
+
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 3rem;
+
+  --shadow-artistic: 0 4px 6px -1px rgba(62, 39, 35, 0.05), 0 2px 4px -1px rgba(62, 39, 35, 0.03);
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-ink font-serif antialiased;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 sm:px-12 py-12 sm:py-20;
+  }
+
+  .nav-link {
+    @apply text-ink/60 hover:text-soil transition-colors font-semibold uppercase tracking-widest text-xs px-4 py-2 hover:bg-soil/5;
+  }
+
+  .nav-link-active {
+    @apply text-soil border-b-2 border-leaf font-bold;
+  }
+
+  .button-primary {
+    @apply bg-mango text-white px-8 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-mango/90 transition-all shadow-artistic active:scale-[0.98] disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2;
+  }
+
+  .button-secondary {
+    @apply bg-leaf text-white px-8 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-leaf/90 transition-all shadow-artistic active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2;
+  }
+
+  .artistic-card {
+    @apply bg-white rounded-3xl border-2 shadow-artistic transition-all hover:shadow-lg;
+  }
+}
