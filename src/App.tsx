@@ -327,10 +327,10 @@ export default function App() {
                 <p className="text-sm opacity-90 leading-normal mb-6">Our Badami trees are heavy with fruit. Shipping starts this Monday.</p>
                 <div className="group relative w-full h-80 rounded-3xl overflow-hidden shadow-artistic mt-8 mb-4 border-2 border-white">
                   <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory h-full">
-                    <img src="/images/img1.jpeg" alt="Mango Orchard 1" className="w-full h-full object-cover snap-center flex-shrink-0" />
-                    <img src="/images/img2.jpeg" alt="Mango Orchard 2" className="w-full h-full object-cover snap-center flex-shrink-0" />
-                    <img src="/images/img3.jpeg" alt="Mango Orchard 3" className="w-full h-full object-cover snap-center flex-shrink-0" />
-                    <img src="/images/img4.jpeg" alt="Mango Orchard 4" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/img1.jpeg" alt="Mango Orchard 1" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/img2.jpeg" alt="Mango Orchard 2" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/img3.jpeg" alt="Mango Orchard 3" className="w-full h-full object-cover snap-center flex-shrink-0" />
+                    <img src="/img4.jpeg" alt="Mango Orchard 4" className="w-full h-full object-cover snap-center flex-shrink-0" />
                   </div>
                   <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
                     <div class="w-2 h-2 bg-white rounded-full"></div>
@@ -354,7 +354,7 @@ export default function App() {
               <div className="flex-1 artistic-card border-mango p-8 flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src="/images/img6.jpeg" 
+                    src="/img6.jpeg" 
                     alt="Sindura Mangoes" 
                     className="w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0"
                   />
@@ -374,7 +374,7 @@ export default function App() {
               <div className="flex-1 artistic-card border-leaf p-8 flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src="/images/img5.jpeg" 
+                    src="/img5.jpeg" 
                     alt="Badami Mangoes" 
                     className="w-full h-full object-cover opacity-20 group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0"
                   />
@@ -455,7 +455,7 @@ export default function App() {
               >
                 <div className="relative h-80 overflow-hidden bg-cream">
                   <img 
-                    src={mango.id === 'sindura' ? "/images/img6.jpeg" : "/images/img5.jpeg"}
+                    src={mango.id === 'sindura' ? "/img6.jpeg" : "/img5.jpeg"}
                     alt={mango.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
