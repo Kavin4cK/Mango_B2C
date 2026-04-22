@@ -52,7 +52,7 @@ const VARIETIES = {
 const FARM_DETAILS = {
   name: 'Strait of Mangoes',
   location: 'Ramanagara, Karnataka',
-  upiId: 'straitmangoes@upi',
+  upiId: 'ashokhegde8898@oksbi',
   whatsapp: '+917975245649', // Placeholder
   email: 'straitofmangoes@gmail.com',
   address: 'Jalamangala, Near Ramanagara Hills, Ramanagara - 562159'
@@ -129,6 +129,7 @@ export default function App() {
     name: '',
     phone: '',
     address: '',
+    pincode: '',
     screenshot: null as File | null,
     transactionId: ''
   });
@@ -274,6 +275,18 @@ export default function App() {
     }
   };
 
+  const validatePincode = (pincode: string): { valid: boolean; zone?: string } => {
+    const pin = parseInt(pincode);
+    if (isNaN(pin)) return { valid: false };
+    
+    if (pin >= 560001 && pin <= 560020) return { valid: true, zone: 'Central areas (MG Road, Shivajinagar, etc.)' };
+    if (pin >= 560021 && pin <= 560060) return { valid: true, zone: 'West & South Bangalore' };
+    if (pin >= 560061 && pin <= 560080) return { valid: true, zone: 'South & Southeast zones' };
+    if (pin >= 560081 && pin <= 560100) return { valid: true, zone: '560081-560100' };
+    
+    return { valid: false };
+  };
+
   const openOrder = (varietyId?: string) => {
     if (varietyId) setSelectedVariety(varietyId);
     setOrderStep(1);
@@ -299,22 +312,8 @@ export default function App() {
                   Pure<br/><span className="text-mango">Ramanagara</span><br/>Gold.
                 </h1>
                 <p className="text-xl leading-relaxed opacity-80 mb-8 italic text-ink">
-                  "Hand-picked at sunrise, shipped by noon. No middlemen, no chemicals—just the honest taste of Karnataka's soil."
+                  "Grown organically and harvested only upon order, our mangoes bring you the true organic taste of Karnataka’s soil. No middlemen, no chemicals—just pure, honest freshness delivered directly to you."
                 </p>
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white shadow-sm border border-border-subtle">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border border-soil/10 shadow-sm">
-                    <img 
-                      src="https://photos.fife.usercontent.google.com/pw/AP1GczNu6I_iHsEYJor-AnqaAT27mY8RMJMhnsLDDkUKc7RrDM7ob-BW-un2=w685-h913-s-no-gm?authuser=0" 
-                      alt="Ramesh G." 
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase opacity-50 tracking-wider">Farmer's Voice</p>
-                    <p className="text-sm font-bold">Ramesh G., 3rd Gen Grower</p>
-                  </div>
-                </div>
               </motion.div>
 
               <motion.div 
@@ -419,17 +418,56 @@ export default function App() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-              <div className="p-8 rounded-3xl bg-white border-2 border-dashed border-soil/20 flex flex-col items-center justify-center text-center gap-4">
-                <div className="w-16 h-16 bg-cream border border-border-subtle flex items-center justify-center rounded-xl shadow-sm">
-                  <div className="w-10 h-10 bg-soil/5 rounded flex items-center justify-center text-[10px] text-soil/40 font-bold">QR</div>
+        {/* Notes Section */}
+        <div className="section-container pt-0">
+          <div className="bg-soil/5 border-2 border-dashed border-soil/20 rounded-3xl p-8 md:p-12">
+            <h3 className="text-2xl font-black text-soil mb-8">Important Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex gap-4">
+                <div className="w-6 h-6 bg-mango rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">✓</div>
+                <div>
+                  <p className="text-sm font-bold text-soil mb-1">Delivery Timeline</p>
+                  <p className="text-sm text-ink/70">Delivery within 4 days from the date of order</p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-soil">UPI Payment Only</p>
-                  <p className="text-sm font-mono font-bold text-soil/70">{FARM_DETAILS.upiId}</p>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-6 h-6 bg-mango rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">✓</div>
+                <div>
+                  <p className="text-sm font-bold text-soil mb-1">Payment Method</p>
+                  <p className="text-sm text-ink/70">UPI payments only</p>
                 </div>
-                <div className="h-px w-8 bg-soil/20"></div>
-                <p className="text-[10px] italic leading-tight text-soil/60">Wholesale available.<br/>Direct from Ramanagara.</p>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-6 h-6 bg-mango rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">✓</div>
+                <div>
+                  <p className="text-sm font-bold text-soil mb-1">Refund Policy</p>
+                  <p className="text-sm text-ink/70">If harvest is closed after placing an order, a full refund will be processed within 24 hours</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-6 h-6 bg-mango rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">✓</div>
+                <div>
+                  <p className="text-sm font-bold text-soil mb-1">Delivery Coverage</p>
+                  <p className="text-sm text-ink/70">Delivery available within Bangalore only</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-6 h-6 bg-mango rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">✓</div>
+                <div>
+                  <p className="text-sm font-bold text-soil mb-1">Delivery Hours</p>
+                  <p className="text-sm text-ink/70">Delivery timings: 3:00 PM to 9:00 PM</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-6 h-6 bg-mango rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">✓</div>
+                <div>
+                  <p className="text-sm font-bold text-soil mb-1">Extended Delivery</p>
+                  <p className="text-sm text-ink/70">For locations beyond 5 km, delivery will be fulfilled via Porter</p>
+                </div>
               </div>
             </div>
           </div>
@@ -584,7 +622,7 @@ export default function App() {
             >
               <div className="aspect-[4/5] bg-soil/5 rounded-[4rem] overflow-hidden shadow-2xl relative border-8 border-white">
                 <img 
-                  src="https://picsum.photos/seed/farmer/800/1000" 
+                  src="/img7.jpeg" 
                   alt="Our Farmer"
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
@@ -599,13 +637,13 @@ export default function App() {
               <h2 className="text-6xl font-black text-soil leading-tight">A Legacy in Every Bite.</h2>
               <div className="space-y-6 text-xl text-ink/80 leading-relaxed italic">
                 <p>
-                  "I was born in the shadow of Ramanagara's hills. My father planted these trees forty years ago, and today, they are part of our family. 
+                  Rooted in the fertile lands of Karnataka, our mangoes are grown with care by dedicated farmers who have nurtured these orchards for generations.
                 </p>
                 <p>
-                  At Strait of Mangoes, we don't believe in industrial scale. We believe in the sound of the wind through the leaves and the heat of the Karnataka sun that ripens every fruit to perfection."
+                  At Strait of Mangoes, we focus on quality over scale. Every fruit is harvested by farmers and ripened naturally only upon order, ensuring it reaches you at its freshest.
                 </p>
                 <p>
-                  No middlemen, no wax, just the fruit as nature intended.
+                  Organic, chemical-free, and free from middlemen—just mangoes as nature intended.
                 </p>
               </div>
               
@@ -615,7 +653,7 @@ export default function App() {
                 </div>
                 <div>
                    <h4 className="font-bold text-soil text-lg mb-1">Find us in Ramanagara</h4>
-                   <p className="text-ink/60 text-sm italic">Visitors are welcome during harvest weekends. Use the contact tab to schedule a visit.</p>
+                   <p className="text-ink/60 text-sm italic"> 12.821051, 77.206448 Ramanagaram, Karnataka, Ramanagaram, Karnataka</p>
                 </div>
               </div>
             </div>
@@ -822,13 +860,39 @@ export default function App() {
                               value={orderData.address}
                               onChange={e => setOrderData({...orderData, address: e.target.value})}
                            ></textarea>
+                           <input 
+                              type="text" 
+                              placeholder="Pincode" 
+                              required
+                              className={`w-full bg-white border px-4 py-4 rounded-xl focus:outline-none focus:ring-2 shadow-sm ${
+                                orderData.pincode 
+                                  ? validatePincode(orderData.pincode).valid 
+                                    ? 'border-leaf focus:ring-leaf/50' 
+                                    : 'border-red-500 focus:ring-red-500/50' 
+                                  : 'border-soil/10 focus:ring-mango/50'
+                              }`}
+                              value={orderData.pincode}
+                              onChange={e => setOrderData({...orderData, pincode: e.target.value})}
+                           />
+                           {orderData.pincode && !validatePincode(orderData.pincode).valid && (
+                             <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                               <p className="text-sm font-bold text-red-600">❌ Delivery Not Available</p>
+                               <p className="text-xs text-red-500 mt-1">We currently deliver only to Bangalore pincodes: 560001-560020, 560021-560060, 560061-560080, 560081-560100</p>
+                             </div>
+                           )}
+                           {orderData.pincode && validatePincode(orderData.pincode).valid && (
+                             <div className="p-4 bg-leaf/10 border border-leaf/30 rounded-xl">
+                               <p className="text-sm font-bold text-leaf">✓ Delivery Available</p>
+                             </div>
+                           )}
                         </div>
 
                         <div className="flex gap-4">
                           <button type="button" onClick={() => setOrderStep(1)} className="flex-1 py-4 text-soil font-bold hover:bg-white rounded-full">Back</button>
                           <button 
                             type="submit"
-                            className="flex-[2] button-primary"
+                            disabled={orderData.pincode ? !validatePincode(orderData.pincode).valid : false}
+                            className="flex-[2] button-primary disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Proceed to Payment
                           </button>
@@ -840,15 +904,12 @@ export default function App() {
                       <form onSubmit={handleOrderSubmit} className="space-y-8">
                         <div className="bg-white p-8 rounded-2xl shadow-inner border border-soil/5 text-center">
                           <p className="text-soil/60 mb-4">Scan QR or use UPI ID to pay</p>
-                          <div className="w-48 h-48 bg-soil/5 rounded-xl mx-auto flex items-center justify-center mb-6 relative">
-                            {/* Placeholder for QR Code */}
-                            <div className="grid grid-cols-2 gap-2 opacity-20">
-                              <div className="w-6 h-6 bg-soil"></div><div className="w-6 h-6 bg-soil"></div>
-                              <div className="w-6 h-6 bg-soil"></div><div className="w-6 h-6 bg-soil"></div>
-                            </div>
-                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                              <span className="bg-white px-2 py-1 rounded text-[10px] font-bold border border-soil/10">SAMPLE QR</span>
-                            </div>
+                          <div className="w-48 h-48 bg-soil/5 rounded-xl mx-auto flex items-center justify-center mb-6 relative overflow-hidden">
+                            <img 
+                              src="/img8.png" 
+                              alt="UPI QR Code" 
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                           <p className="font-mono font-bold text-lg select-all bg-cream inline-block px-4 py-2 rounded-lg border border-soil/10">
                             {FARM_DETAILS.upiId}
